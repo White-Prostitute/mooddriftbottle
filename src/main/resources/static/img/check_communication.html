@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>审核</title>
+  <link rel="shortcut icon" href="../../src/headtitle.png">
+</head>
+<body style="min-width: 1920px">
+
+
+<style>
+  .item{
+    width: fit-content;
+    height: fit-content;
+    border: 1px solid rgba(128, 128, 128, 0.373);
+    border-radius: 2px;
+    font-size: 20px;
+  }
+</style>
+
+<div class="layui-layout layui-layout-admin">
+
+  <!--头部导航-->
+  <div id="top">
+    <ul class="layui-header layui-nav" layfilter="">
+      <li class="layui-nav-item" ><a href="home.html" style="font-family:'Arial Black';font-size: 20px">心情漂流瓶</a></li>
+      <div class="layui-layout-right"><li class="layui-nav-item"><a href="javascript:;">欢迎光临！{{userName}}</a>
+        <dl class="layui-nav-child">
+          <dd><a href="../logout.html">退出登录</a></dd>
+        </dl>
+      </li></div>
+    </ul>
+  </div>
+
+
+  <div id="info" class="layui-body">
+
+    <table class="layui-table">
+      <colgroup>
+        <col width="150">
+        <col width="150">
+        <col width="200">
+        <col>
+      </colgroup>
+      <thead>
+      <tr>
+        <th>对话id</th>
+        <th>漂流瓶id</th>
+        <th>回复时间</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>{{info.reply_id}}</td>
+        <td>{{info.belong_id}}</td>
+        <td>{{info.reply_time}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 0px;margin-left: 0px" >
+      <legend>对话审核</legend>
+    </fieldset>
+
+    <div v-for="reply in replyList" class="item">
+      {{reply.reply}}
+      <input v-model="openid" :value="reply.user_id" type="checkbox" style="width:20px;height:20px">
+    </div>
+
+    <div class="">
+      <button class="layui-btn " style="margin-left: 400px" @click="sub()">提交</button>
+      <button class="layui-btn " style="margin-left: 400px;background-color: gray" @click="back()">驳回</button>
+    </div>
+  </div>
+
+
+
+</div>
+<script src="JS/vue.js"></script>
+<script src="JS/axios.js"></script>
+<script src="JS/bottle.js"></script>
+<link href="layui/css/layui.css" rel="stylesheet">
+<script src="layui/layui.js"></script>
+
+<script>
+  new Vue({
+    el:"#info",
+    data(){
+      return{
+        info:{},
+        replyList:[],
+        openid:[]
+      }
+    },
+    mounted: function () {
+      const _this = this;
+      axios({
+        method: "post",
+        url: baseUrl + "/check/get_reply_list",
+        data: {}
+      }).then(function (resp) {
+        _this.replyList = resp.data;
+        _this.info = resp.data[0];
+      })
+    },
+    methods:{
+      sub(){
+        let _this = this
+        alert(this.info.reply_id)
+        axios({
+          url:baseUrl + "/check/violation",
+          method:"post",
+          data:{
+            "openid":_this.openid,
+            "belong_id":_this.info.reply_id
+          }
+        }).then(function(resp){
+          alert("提交成功")
+          location.reload()
+        })
+      }
+
+    }
+  })
+</script>
+
+</body>
+</html>

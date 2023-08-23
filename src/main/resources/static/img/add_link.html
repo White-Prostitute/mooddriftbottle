@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>我的账户</title>
+</head>
+<body style="min-width: 1920px">
+
+<div class="layui-layout layui-layout-admin">
+
+    <!--头部导航-->
+    <div id="top">
+        <ul class="layui-header layui-nav" layfilter="">
+            <li class="layui-nav-item" ><a href="http://localhost:8080/indexCus.html" style="font-family:'Arial Black';font-size: 20px">心情漂流瓶</a></li>
+            <div class="layui-layout-right"><li class="layui-nav-item"><a href="javascript:;">欢迎光临！{{userName}}</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="../logout.html">退出登录</a></dd>
+                </dl>
+            </li></div>
+        </ul>
+    </div>
+
+
+    <div id="info" class="layui-body">
+
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 0px;margin-left: 0px" >
+            <legend>添加公众号链接</legend>
+        </fieldset>
+
+        <form method="post">
+            <div class="layui-form-item">
+                <label class="layui-form-label">url</label>
+                <div class="layui-input-block">
+                    <input type="text" v-model="link.url" autocomplete="off"  class="layui-input" style="width: 400px">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-block">
+                    <input type="text" v-model="link.title" autocomplete="off"  class="layui-input" style="width: 400px">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预览内容</label>
+                <div class="layui-input-block">
+                    <input type="text" v-model="link.content" autocomplete="off"  class="layui-input" style="width: 400px">
+                </div>
+            </div>
+            <div style="margin-left: 100px" class="layui-col-md1">
+                <select  v-model="link.type" @Change="choseType()" style="width: 100px;height: 40px;border: solid 1px #c7c1c1">
+                    <option value="2" selected>精彩活动</option>
+                    <option value="1" >心理科普</option>
+                </select>
+            </div>
+            <div class="layui-form-item">
+                <button @click="send()" class="layui-btn" style="margin-left: 200px;margin-top: 20px">添加</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="JS/vue.js"></script>
+<script src="JS/axios.js"></script>
+<script src="JS/bottle.js"></script>
+<link href="layui/css/layui.css" rel="stylesheet">
+<script src="layui/layui.js"></script>
+
+
+<script>
+    new Vue({
+        el:"#info",
+        data(){
+            return{
+                link:{
+                    "type":1
+                },
+            }
+        },
+        methods:{
+            send:function (){
+                let that = this;
+                axios({
+                    method:"post",
+                    url: baseUrl + "/link/add",
+                    data:{
+                        "url":that.link.url,
+                        "title":that.link.title,
+                        "content":that.link.content,
+                        "type":that.link.type
+                    },
+                    headers: { // 请求头
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then(function (resp){
+                    if(resp.data == "success"){
+                        alert("添加成功")
+                    }
+                })
+            }
+        }
+
+    })
+</script>
+
+</body>
+</html>

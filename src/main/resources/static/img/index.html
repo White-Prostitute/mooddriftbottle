@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <link rel="shortcut icon" href="src/headtitle.png">
+    <meta charset="UTF-8">
+    <title>心情漂流瓶</title>
+    <link rel="shortcut icon" href="src/headtitle.png">
+</head>
+<body style="min-width: 1920px;">
+
+<div class="layui-layout layui-layout-admin">
+
+    <!--头部导航-->
+    <div id="top">
+        <ul class="layui-header layui-nav" layfilter="">
+            <li class="layui-nav-item" ><a href="login.html" style="font-family:'Arial Black';font-size: 20px">心情漂流瓶</a></li>
+            <div class="layui-layout-right"><li class="layui-nav-item" ><a href="#logplace">欢迎光临！</a>
+            </li></div>
+        </ul>
+    </div>
+
+    <div class="layui-body">
+
+        <div class="layui-tab layui-tab-brief" lay-filter="">
+
+            <!--用户的登录选项卡-->
+            <div class="layui-tab-content" style="height: 100px;">
+                <div class="layui-tab-item layui-show">
+                    <form style="width: 800px" class="layui-form" action="http://localhost:8080/login" method="post">
+                        <div style="margin-top: 30px" class="layui-form-item">
+                            <label class="layui-form-label">账号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="account_id" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                            </div>
+                        </div>
+                        <div style="margin-top: 30px" class="layui-form-item">
+                            <label class="layui-form-label">密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" name="password_md5" lay-verify="password" autocomplete="off" placeholder="请输入密码" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <button class="layui-btn" >登录</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+<script src="JS/vue.js"></script>
+<script src="JS/axios.js"></script>
+<link href="layui/css/layui.css" rel="stylesheet">
+<script src="layui/layui.js"></script>
+
+</body>
+</html>

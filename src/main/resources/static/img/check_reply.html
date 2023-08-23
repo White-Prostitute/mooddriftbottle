@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>审核</title>
+    <link rel="shortcut icon" href="../../src/headtitle.png">
+</head>
+<body style="min-width: 1920px">
+
+<div class="layui-layout layui-layout-admin">
+
+    <!--头部导航-->
+    <div id="top">
+        <ul class="layui-header layui-nav" layfilter="">
+            <li class="layui-nav-item" ><a href="home.html" style="font-family:'Arial Black';font-size: 20px">心情漂流瓶</a></li>
+            <div class="layui-layout-right"><li class="layui-nav-item"><a href="javascript:;">欢迎光临！{{userName}}</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="../logout.html">退出登录</a></dd>
+                </dl>
+            </li></div>
+        </ul>
+    </div>
+
+
+    <div id="info" class="layui-body">
+
+        <table class="layui-table">
+            <colgroup>
+                <col width="150">
+                <col width="150">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>回复id</th>
+                <th>漂流瓶id</th>
+                <th>回复时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{info.reply_id}}</td>
+                <td>{{info.belong_id}}</td>
+                <td>{{info.reply_time}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 0px;margin-left: 0px" >
+            <legend>漂流瓶内容</legend>
+        </fieldset>
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-input-block" >
+                    <p class="layui-input" style="width: 80%;height: 150px;font-size: large;padding: 10px">{{bottle.content}}</p>
+                </div>
+            </div>
+        </form>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 0px;margin-left: 0px" >
+            <legend>回复内容审核</legend>
+        </fieldset>
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-input-block" >
+                    <p class="layui-input" style="width: 80%;height: 300px;font-size: large;padding: 10px">{{info.reply}}</p>
+                </div>
+            </div>
+        </form>
+        <div class="">
+            <button class="layui-btn " style="margin-left: 400px" @click="past()">通过</button>
+            <button class="layui-btn " style="margin-left: 400px;background-color: gray" @click="back()">驳回</button>
+        </div>
+    </div>
+
+
+
+</div>
+<script src="JS/vue.js"></script>
+<script src="JS/axios.js"></script>
+<script src="JS/bottle.js"></script>
+<link href="layui/css/layui.css" rel="stylesheet">
+<script src="layui/layui.js"></script>
+
+<script>
+    new Vue({
+        el:"#info",
+        data(){
+            return{
+                info:{},
+                bottle:{}
+            }
+        },
+        mounted: function () {
+            const _this = this;
+            axios({
+                method: "post",
+                url: baseUrl + "/reply/get_unchecked_reply",
+                data: {}
+            }).then(function (resp) {
+                _this.info = resp.data;
+                axios({
+                    method:"get",
+                    url: baseUrl + "/bottle/get_one_bottle?bottle_id=" + resp.data.belong_id,
+                }).then(function (resp){
+                    _this.bottle = resp.data;
+                })
+            })
+        },
+        methods:{
+            past:function (){
+                let that = this;
+                axios({
+                    method:"post",
+                    url: baseUrl + "/reply/reply_check",
+                    data:{"belong_id":that.info.belong_id,
+                            "reply_id":that.info.reply_id,
+                            "check":1
+                    },
+                    headers: { // 请求头
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then(function (resp){
+                    if(resp.data == "success"){
+                        alert("审核结果提交成功")
+                        location.reload();
+                    }else{
+                        alert("审核结果提交失败")
+                    }
+                })
+            },
+            back:function (){
+                let that = this;
+                axios({
+                    method:"post",
+                    url: baseUrl + "/reply/reply_check",
+                    data:{"belong_id":that.info.belong_id,
+                        "reply_id":that.info.reply_id,
+                        "check":2
+                    },
+                    headers: { // 请求头
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then(function (resp){
+                    if(resp.data == "success"){
+                        alert("审核结果提交成功")
+                        location.reload();
+                    }else{
+                        alert("审核结果提交失败")
+                    }
+                })
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh" >
+<head>
+  <link rel="shortcut icon" href="src/headtitle.png">
+  <meta charset="UTF-8">
+  <title>心情漂流瓶</title>
+  <link href="layui/css/layui.css" rel="stylesheet">
+</head>
+<body style="min-width: 1920px">
+
+<div class="layui-layout layui-layout-admin">
+  <!--头部导航-->
+  <div id="top">
+    <ul class="layui-header layui-nav" layfilter="">
+      <li class="layui-nav-item" ><a href="home.html" style="font-family:'Arial Black';font-size: 20px">心情漂流瓶</a></li>
+      <div class="layui-layout-right"><li class="layui-nav-item"><a href="javascript:;">欢迎光临！{{userName}}</a>
+        <dl class="layui-nav-child">
+          <dd><a href="childSystem/logout.html">退出登录</a></dd>
+        </dl>
+      </li></div>
+    </ul>
+  </div>
+  <!--侧边导航-->
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll ">
+      <ul class="layui-nav layui-nav-tree" >
+        <li class="layui-nav-item"><a href="#yingshou">漂流瓶审核</a></li>
+        <li class="layui-nav-item"><a href="#gongcheng">回复审核</a></li>
+        <li class="layui-nav-item"><a href="#kehufuwu">审核对话</a></li>
+      </ul>
+    </div>
+  </div>
+  <!--主体部分-->
+  <div class="layui-body">
+
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;margin-left: 150px" id="yingshou">
+      <legend><br></legend>
+      <legend><br></legend>
+      <legend><br></legend>
+      <legend>漂流瓶审核</legend>
+    </fieldset>
+    <a href="check.html" style="margin-left: 150px"><img src="img/boat.png" style="height:100px;width: 100px"></a>
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;margin-left: 150px" id="gongcheng">
+      <legend><br></legend>
+      <legend><br></legend>
+      <legend><br></legend>
+      <legend>回复审核</legend>
+    </fieldset>
+    <a href="check_reply.html" style="margin-left: 150px"><img src="img/boat.png" style="height:100px;width: 100px"></a>
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;margin-left: 150px" id="kehufuwu">
+      <legend><br></legend>
+      <legend><br></legend>
+      <legend><br></legend>
+      <legend>审核对话</legend>
+    </fieldset>
+    <a href="check_communication.html" style="margin-left: 150px"><img src="img/boat.png" style="height:100px;width: 100px"></a>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+  </div>
+
+  <!--脚部-->
+  <div class="layui-footer layui-bg-black" style="height:50px;">
+    <h5 style="float: right">@Mood Drift Bottle</h5>
+  </div>
+
+</div>
+
+<script src="JS/vue.js"></script>
+<script src="JS/axios.js"></script>
+<script src="layui/layui.js"></script>
+
+
+</body>
+</html>
