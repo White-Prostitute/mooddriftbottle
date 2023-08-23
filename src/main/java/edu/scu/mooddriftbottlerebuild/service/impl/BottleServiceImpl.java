@@ -9,6 +9,7 @@ import edu.scu.mooddriftbottlerebuild.entity.BottleEntity;
 import edu.scu.mooddriftbottlerebuild.service.BottleService;
 import edu.scu.mooddriftbottlerebuild.utils.PageUtils;
 import edu.scu.mooddriftbottlerebuild.utils.Query;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
 import java.util.*;
 
 
+@Slf4j
 @Service("bottleService")
 public class BottleServiceImpl extends ServiceImpl<BottleDao, BottleEntity> implements BottleService {
 
@@ -110,6 +112,8 @@ public class BottleServiceImpl extends ServiceImpl<BottleDao, BottleEntity> impl
     @Override
     public void checkBottle(int bottle_id, int check, String replyStr) {
         //TODO 审核员的回复
+
+        log.info("编号为{}的瓶子被{}了", bottle_id, check==1?"通过":"驳回");
 
         //将瓶子id从未检查列表移除
         synchronized (uncheckedIds){
