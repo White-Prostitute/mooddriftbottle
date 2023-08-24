@@ -37,4 +37,9 @@ public class UsersEntity implements Serializable {
 	 */
 	private Integer violation;
 
+	/**
+	 * 用户积分
+	 */
+	private Integer score;
+
 }

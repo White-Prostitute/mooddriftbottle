@@ -1,6 +1,7 @@
 package edu.scu.mooddriftbottlerebuild.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import edu.scu.mooddriftbottlerebuild.controller.reqeust.CheckBottleRequest;
 import edu.scu.mooddriftbottlerebuild.entity.BottleEntity;
 import edu.scu.mooddriftbottlerebuild.utils.PageUtils;
 
@@ -22,7 +23,7 @@ public interface BottleService extends IService<BottleEntity> {
 
     BottleEntity getOneBottleUnChecked();
 
-    void checkBottle(int bottle_id, int check, String replyStr);
+    void checkBottle(CheckBottleRequest request);
 
     void addBottle(BottleEntity bottle, String token) throws Exception;
 

@@ -49,3 +49,5 @@ create table users
 alter table users
     add primary key (open_id);
 
+ALTER TABLE users ADD score INT DEFAULT 0;
+

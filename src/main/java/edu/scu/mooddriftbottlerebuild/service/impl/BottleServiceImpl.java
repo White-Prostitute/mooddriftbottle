@@ -3,9 +3,12 @@ package edu.scu.mooddriftbottlerebuild.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import edu.scu.mooddriftbottlerebuild.config.ConstantConfig;
+import edu.scu.mooddriftbottlerebuild.controller.reqeust.CheckBottleRequest;
 import edu.scu.mooddriftbottlerebuild.dao.BottleDao;
 import edu.scu.mooddriftbottlerebuild.dao.UsersDao;
 import edu.scu.mooddriftbottlerebuild.entity.BottleEntity;
+import edu.scu.mooddriftbottlerebuild.entity.UsersEntity;
 import edu.scu.mooddriftbottlerebuild.service.BottleService;
 import edu.scu.mooddriftbottlerebuild.utils.PageUtils;
 import edu.scu.mooddriftbottlerebuild.utils.Query;
@@ -35,6 +38,9 @@ public class BottleServiceImpl extends ServiceImpl<BottleDao, BottleEntity> impl
     private static  final List<Integer> uncheckedIds = new ArrayList<>();
 
     private static int maxIdNow;
+
+    //用于充当锁，防止并发修改积分
+    private static final Object scoreLock = new Object();
 
     /**
      * 初始化BottleService,将未检查的瓶子ID放入集合当中
@@ -105,30 +111,38 @@ public class BottleServiceImpl extends ServiceImpl<BottleDao, BottleEntity> impl
      * 1. 将瓶子id从未检查列表中移除
      * 2. 如果是驳回则添加缓存提醒用户
      * 3. 如果审核员有回复则新增回复
-     * @param bottle_id 瓶子id
-     * @param check 审核结果
-     * @param replyStr 审核员的回复
      */
     @Override
-    public void checkBottle(int bottle_id, int check, String replyStr) {
+    public void checkBottle(CheckBottleRequest request) {
         //TODO 审核员的回复
 
-        log.info("编号为{}的瓶子被{}了", bottle_id, check==1?"通过":"驳回");
+        log.info("编号为{}的瓶子被{}了", request.getBottleId(), request.getCheck()==1?"通过":"驳回");
 
         //将瓶子id从未检查列表移除
         synchronized (uncheckedIds){
-            if(bottle_id == uncheckedIds.get(0)){
+            if(request.getBottleId() == uncheckedIds.get(0)){
                 uncheckedIds.remove(0);
             }
         }
         //如果驳回添加缓存
-        if(check == 2){
-            String userId = baseMapper.selectById(bottle_id).getUserId();
+        if(request.getCheck() == 2){
+            String userId = baseMapper.selectById(request.getBottleId()).getUserId();
             //TODO 修改了缓存存储方式
             SetOperations<String, String> set = template.opsForSet();
             set.add("overruleSet", userId);
+        }else if(request.getCheck() == 1){
+            //瓶子通过，获得积分
+            synchronized (scoreLock){
+                String userId = request.getUserId();
+                UsersEntity usersEntity = usersDao.selectById(userId);
+                if(Objects.nonNull(usersEntity)){
+                    Integer score = usersEntity.getScore();
+                    usersEntity.setScore(score + ConstantConfig.Score.BOTTLE_SCORE);
+                    usersDao.updateById(usersEntity);
+                }
+            }
         }
-        baseMapper.checkBottle(bottle_id, check);
+        baseMapper.checkBottle(request.getBottleId(), request.getCheck());
     }
 
     /**

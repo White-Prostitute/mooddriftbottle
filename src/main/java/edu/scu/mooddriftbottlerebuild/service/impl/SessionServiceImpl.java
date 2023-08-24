@@ -3,11 +3,14 @@ package edu.scu.mooddriftbottlerebuild.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import edu.scu.mooddriftbottlerebuild.config.ConstantConfig;
 import edu.scu.mooddriftbottlerebuild.dao.BottleDao;
 import edu.scu.mooddriftbottlerebuild.dao.ReplyDao;
 import edu.scu.mooddriftbottlerebuild.dao.SessionDao;
+import edu.scu.mooddriftbottlerebuild.dao.UsersDao;
 import edu.scu.mooddriftbottlerebuild.entity.ReplyEntity;
 import edu.scu.mooddriftbottlerebuild.entity.SessionEntity;
+import edu.scu.mooddriftbottlerebuild.entity.UsersEntity;
 import edu.scu.mooddriftbottlerebuild.service.SessionService;
 import edu.scu.mooddriftbottlerebuild.utils.PageUtils;
 import edu.scu.mooddriftbottlerebuild.utils.Query;
@@ -35,6 +38,9 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao, SessionEntity> i
 
     @Autowired
     ReplyDao replyDao;
+
+    @Autowired
+    UsersDao usersDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -77,11 +83,17 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao, SessionEntity> i
     @Override
     public void checkSession(SessionEntity entity, int check) {
         if(check == 1){//审核通过，添加缓存提醒用户有新的评论
-            //首先需要查询是谁被恢复了，即根据会话bottle_id找到bottle的user_id
+            //首先需要查询是谁被回复了，即根据会话bottle_id找到bottle的user_id
             String beReplyUserId = bottleDao.selectById(entity.getBottleId()).getUserId();
             String key = beReplyUserId+":"+entity.getBottleId()+":reply";
             ValueOperations<String, String> ops = template.opsForValue();
             ops.set(key, "1");
+
+            //添加积分
+            UsersEntity usersEntity = usersDao.selectById(entity.getUserId());
+            Integer score = usersEntity.getScore();
+            usersEntity.setScore(score + ConstantConfig.Score.REPLY_SCORE);
+            usersDao.updateById(usersEntity);
         }
         entity.setChecked(check);
         baseMapper.updateById(entity);

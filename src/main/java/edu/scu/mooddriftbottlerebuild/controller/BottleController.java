@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.scu.mooddriftbottlerebuild.controller.reqeust.CheckBottleRequest;
 import edu.scu.mooddriftbottlerebuild.utils.PageUtils;
 import edu.scu.mooddriftbottlerebuild.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import edu.scu.mooddriftbottlerebuild.service.BottleService;
  * @email 3537136394@qq.com
  * @date 2023-05-20 00:09:36
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/bottle")
 public class BottleController {
@@ -57,19 +59,16 @@ public class BottleController {
 
     /**
      * 完成一个瓶子的审核
-     * @param bottle_id 审核瓶子的id
-     * @param check 审核结果 1 -> 通过 ; 2 -> 驳回
-     * @param replyStr 审核员可以直接回复瓶子
      * @return 成功与否 success / exception
      */
     @PutMapping("/check")
-    R checkBottle(int bottle_id, int check, String replyStr){
+    R checkBottle(CheckBottleRequest request){
         try{
-            bottleService.checkBottle(bottle_id, check, replyStr);
+            bottleService.checkBottle(request);
         }catch (Exception e){
             return R.error().put("exception", e.toString());
         }
-        return Objects.requireNonNull(R.ok().put("result", check)).put("bottle_id", bottle_id);
+        return Objects.requireNonNull(R.ok().put("result", request.getCheck())).put("bottle_id", request.getBottleId());
     }
 
     /**
