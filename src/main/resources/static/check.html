@@ -39,9 +39,9 @@
             </thead>
             <tbody>
             <tr>
-                <td>{{info.bottle_id}}</td>
+                <td>{{info.bottleId}}</td>
                 <td>{{info.type}}</td>
-                <td>{{info.create_time}}</td>
+                <td>{{info.createTime}}</td>
             </tr>
             </tbody>
         </table>
@@ -88,21 +88,21 @@
         mounted: function () {
             const _this = this;
             axios({
-                method: "post",
+                method: "get",
                 url: baseUrl + "/bottle/get_random_bottle_unchecked",
                 data: {}
             }).then(function (resp) {
-                _this.info = resp.data;
+                _this.info = resp.data.bottle;
             })
         },
         methods:{
             past:function (){
                 let that = this;
                 axios({
-                    method:"post",
+                    method:"put",
                     url: baseUrl + "/bottle/check",
                     data:{
-                        "bottle_id":that.info.bottle_id,
+                        "bottle_id":that.info.bottleId,
                         "replyStr":that.reply,
                         "check":1
                     },
@@ -110,7 +110,7 @@
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then(function (resp){
-                    if(resp.data == "success"){
+                    if(resp.data.msg == "success"){
                         alert("审核结果提交成功")
                         location.reload();
                     }else{
@@ -121,17 +121,17 @@
             back:function (){
                 let that = this;
                 axios({
-                    method:"post",
+                    method:"put",
                     url: baseUrl + "/bottle/check",
                     data:{
-                        "bottle_id":that.info.bottle_id,
+                        "bottle_id":that.info.bottleId,
                         "check":2
                     },
                     headers: { // 请求头
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then(function (resp){
-                    if(resp.data == "success"){
+                    if(resp.data.msg == "success"){
                         alert("审核结果提交成功")
                         location.reload();
                     }else{

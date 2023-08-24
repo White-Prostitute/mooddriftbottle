@@ -1,6 +1,5 @@
 package edu.scu.mooddriftbottlerebuild.controller;
 
-import edu.scu.mooddriftbottlerebuild.entity.ReplyEntity;
 import edu.scu.mooddriftbottlerebuild.entity.SessionEntity;
 import edu.scu.mooddriftbottlerebuild.service.SessionService;
 import edu.scu.mooddriftbottlerebuild.utils.R;
